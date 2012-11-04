@@ -1,9 +1,11 @@
 MSBuild-Tasks
 =============
 
-Useful MSBuild inline tasks. Import the common.tasks to your project file and use. 
+Useful MSBuild inline tasks and targets. Import the common.tasks and/or common.targets to your project file and use. 
 
-Usage example:
+Usage examples
+
+Zip task:
 
   <Target Name="BeforeBuild">
     <ItemGroup>
@@ -14,3 +16,10 @@ Usage example:
       OutputFileName="$(ProjectDir)$(TargetZipFile)"
       OverwriteExistingFile="true" />
   </Target>
+
+SafeGitClean:
+
+msbuild common.targets /p:BackupDir=C:\temp\backup /p:DeleteBackupDir=true
+
+If BackupDir is not provided a directory in %TEMP% will be created
+The default value for DeleteBackupDir is 'false' 
