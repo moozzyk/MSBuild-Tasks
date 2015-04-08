@@ -33,7 +33,7 @@ Zip task (folders hierarchy maintained relative to InputBaseDirectory):
       OverwriteExistingFile="true" />
   </Target>
 ```
-Zip task (folders hierarchy maintained relative to InputBaseDirectory):
+ZipDir task (folders hierarchy maintained relative to InputBaseDirectory):
 
 ```xml
   <Target Name="BeforeBuild">
