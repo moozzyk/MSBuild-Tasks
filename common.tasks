@@ -4,6 +4,7 @@
   <UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
       <InputFileNames ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <InputBaseDirectory ParameterType="System.String" Required="false" />
       <OutputFileName ParameterType="System.String" Required="true" />
       <OverwriteExistingFile ParameterType="System.Boolean" Required="false" />
 	</ParameterGroup>
@@ -13,11 +14,19 @@
       <Code Type="Fragment" Language="cs">
       <![CDATA[        
         var fileMode = OverwriteExistingFile ? FileMode.Create : FileMode.CreateNew;
+        var baseDir  = string.IsNullOrWhiteSpace(InputBaseDirectory) ? string.Empty : Path.GetFullPath(InputBaseDirectory);
+        var filesToZip = InputFileNames.Select(f => Path.GetFullPath(f.ItemSpec)).Where(n => n.StartsWith(baseDir));
+        
         using (var archive = new ZipArchive(new FileStream(OutputFileName, fileMode), ZipArchiveMode.Create))
         {
-            foreach (var inputFileName in InputFileNames.Select(f => f.ItemSpec))
+            foreach (var inputFileName in filesToZip)
             {
-                var archiveEntry = archive.CreateEntry(Path.GetFileName(inputFileName));
+                var entryName = baseDir.Length == 0
+                              ? Path.GetFileName(inputFileName) 
+                              : inputFileName.Substring(baseDir.Length + 1);
+            
+            
+                var archiveEntry = archive.CreateEntry(entryName);
                 using (var fs = new FileStream(inputFileName, FileMode.Open))
                 {
                     using (var zipStream = archiveEntry.Open())
