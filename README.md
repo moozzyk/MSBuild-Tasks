@@ -5,7 +5,7 @@ Useful MSBuild inline tasks and targets. Import the common.tasks and/or common.t
 
 Usage examples
 
-Zip task:
+Zip task (ignore hierarchy):
 
 ```xml
   <Target Name="BeforeBuild">
@@ -18,6 +18,27 @@ Zip task:
       OverwriteExistingFile="true" />
   </Target>
 ```
+Zip task (folders hierarchy maintained relative to InputBaseDirectory):
+
+  <Target Name="BeforeBuild">
+    <ItemGroup>
+      <FilesToZip Include="$(ProjectDir)\PayloadUnzipped\*.*" />
+    </ItemGroup>
+    <Zip 
+      InputFileNames="@(FilesToZip)"
+      InputBaseDirectory="$(ProjectDir)\PayloadUnzipped"
+      OutputFileName="$(ProjectDir)$(TargetZipFile)"
+      OverwriteExistingFile="true" />
+  </Target>
+ZipDir task (folders hierarchy maintained relative to InputBaseDirectory):
+
+  <Target Name="BeforeBuild">
+    <ZipDir 
+      InputBaseDirectory="$(ProjectDir)\PayloadUnzipped" 
+      OutputFileName="$(ProjectDir)$(TargetZipFile)" 
+      OverwriteExistingFile="true" 
+      IncludeBaseDirectory="false" />
+  </Target>
 
 SafeGitClean:
 
